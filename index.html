@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trivium Venture Network — Advisor Interest Form</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brown:       #433329;
+    --gold:        #EFAC4D;
+    --gold-light:  #F4D6A5;
+    --bg:          #FBF9F7;
+    --tan:         #A77F63;
+    --tan-light:   #D4B99A;
+    --white:       #FFFFFF;
+    --text:        #2A1F18;
+    --muted:       #8B6D5A;
+    --border:      #E8DDD4;
+    --error:       #C0392B;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    background-image: linear-gradient(to bottom, #C09A82 0%, var(--bg) 340px);
+    position: relative;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 80% 90%, rgba(167,127,99,0.07) 0%, transparent 55%),
+      radial-gradient(ellipse 50% 30% at 20% 80%, rgba(239,172,77,0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .hero {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(180deg, #7A5540 0%, #8B6650 60%, #A07460 100%);
+    padding: 60px 24px 72px;
+    text-align: center;
+    z-index: 1;
+  }
+  .hero-orbs { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .hero-orbs span { position: absolute; border-radius: 50%; opacity: 1; }
+  .orb-1 { width: 520px; height: 520px; background: radial-gradient(circle, rgba(180,120,50,0.3) 0%, transparent 70%); top: -180px; left: -120px; }
+  .orb-2 { width: 420px; height: 420px; background: radial-gradient(circle, rgba(120,60,20,0.2) 0%, transparent 70%); bottom: -160px; left: 40px; opacity: 0.18; }
+  .orb-3 { width: 480px; height: 480px; background: radial-gradient(circle, rgba(100,55,20,0.2) 0%, transparent 70%); bottom: -140px; right: -80px; opacity: 0.16; }
+  .hero-logo { position: relative; z-index: 2; display: inline-block; margin-bottom: 32px; animation: fadeUp 0.7s ease both; }
+  .hero h1 { position: relative; z-index: 2; font-family: 'Cormorant Garamond', serif; font-size: clamp(32px, 5.5vw, 48px); font-weight: 300; color: rgba(251,249,247,0.95); line-height: 1.2; margin-bottom: 14px; letter-spacing: 0.01em; animation: fadeUp 0.7s 0.1s ease both; }
+  .hero h1 em { font-style: italic; color: #EFAC4D; }
+  .hero-divider { position: relative; z-index: 2; width: 48px; height: 1px; background: linear-gradient(90deg, transparent, rgba(239,172,77,0.5), transparent); margin: 18px auto; animation: fadeUp 0.7s 0.15s ease both; }
+  .hero p { position: relative; z-index: 2; font-size: 14.5px; color: rgba(244,214,165,0.82); max-width: 440px; margin: 0 auto; line-height: 1.75; font-weight: 300; letter-spacing: 0.01em; animation: fadeUp 0.7s 0.2s ease both; }
+  .hero::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 120px; background: linear-gradient(to bottom, transparent 0%, rgba(160,116,96,0.5) 35%, var(--bg) 100%); z-index: 2; }
+  .page-wrapper { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; padding: 48px 24px 100px; }
+  .progress-container { margin-bottom: 40px; animation: fadeUp 0.7s 0.1s ease both; }
+  .progress-steps { display: flex; justify-content: center; gap: 0; position: relative; }
+  .progress-steps::before { content: ''; position: absolute; top: 16px; left: 50%; transform: translateX(-50%); width: calc(100% - 80px); max-width: 300px; height: 1px; background: var(--border); z-index: 0; }
+  .step-dot { display: flex; flex-direction: column; align-items: center; gap: 8px; position: relative; z-index: 1; flex: 1; max-width: 140px; }
+  .dot { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--border); background: var(--bg); display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; color: var(--tan); transition: all 0.3s ease; }
+  .step-dot.active .dot { border-color: var(--gold); background: var(--gold); color: var(--white); box-shadow: 0 0 0 4px rgba(239,172,77,0.15); }
+  .step-dot.completed .dot { border-color: var(--brown); background: var(--brown); color: var(--white); }
+  .step-label { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--tan); font-weight: 500; text-align: center; }
+  .step-dot.active .step-label { color: var(--brown); font-weight: 600; }
+  .form-card { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 48px 52px; box-shadow: 0 4px 40px rgba(67,51,41,0.06), 0 1px 4px rgba(67,51,41,0.04); animation: fadeUp 0.7s 0.2s ease both; }
+  @media (max-width: 600px) { .form-card { padding: 32px 24px; } }
+  .step-panel { display: none; }
+  .step-panel.active { display: block; }
+  .step-heading { margin-bottom: 32px; }
+  .step-heading .eyebrow { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; display: block; }
+  .step-heading h2 { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 400; color: var(--brown); line-height: 1.2; }
+  .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 24px; }
+  .field-grid .full { grid-column: 1 / -1; }
+  @media (max-width: 580px) { .field-grid { grid-template-columns: 1fr; } .field-grid .full { grid-column: 1; } }
+  .field { display: flex; flex-direction: column; gap: 7px; }
+  label { font-size: 12px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--brown); }
+  label .req { color: var(--gold); margin-left: 2px; }
+  input[type="text"], input[type="email"], input[type="tel"], input[type="url"], select, textarea { width: 100%; padding: 11px 16px; border: 1.5px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; font-size: 14.5px; font-weight: 300; outline: none; transition: border-color 0.2s, box-shadow 0.2s, background 0.2s; appearance: none; -webkit-appearance: none; }
+  input:focus, select:focus, textarea:focus { border-color: var(--gold); background: var(--white); box-shadow: 0 0 0 3px rgba(239,172,77,0.12); }
+  input.error, select.error, textarea.error { border-color: var(--error); }
+  .error-msg { font-size: 11px; color: var(--error); display: none; }
+  .error-msg.show { display: block; }
+  textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
+  select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23A77F63' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 40px; cursor: pointer; }
+  .checkbox-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 400px) { .checkbox-group { grid-template-columns: 1fr; } }
+  .checkbox-item { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 8px; cursor: pointer; transition: all 0.2s; background: var(--bg); }
+  .checkbox-item:hover { border-color: var(--tan-light); background: var(--white); }
+  .checkbox-item input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--gold); flex-shrink: 0; cursor: pointer; }
+  .checkbox-item span { font-size: 13px; font-weight: 400; color: var(--text); line-height: 1.3; }
+  .checkbox-item:has(input:checked) { border-color: var(--gold); background: rgba(239,172,77,0.06); }
+  .checkbox-item:has(input[type="radio"]:checked) { border-color: var(--brown); background: rgba(67,51,41,0.04); }
+  .btn-row { display: flex; justify-content: space-between; align-items: center; margin-top: 36px; gap: 12px; }
+  .btn { padding: 13px 32px; border-radius: 8px; font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 500; letter-spacing: 0.04em; cursor: pointer; transition: all 0.2s; border: none; outline: none; }
+  .btn-primary { background: var(--brown); color: var(--white); box-shadow: 0 2px 12px rgba(67,51,41,0.18); }
+  .btn-primary:hover { background: #2d221a; box-shadow: 0 4px 20px rgba(67,51,41,0.28); transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-secondary { background: transparent; color: var(--muted); border: 1.5px solid var(--border); }
+  .btn-secondary:hover { border-color: var(--tan-light); color: var(--brown); background: rgba(167,127,99,0.05); }
+  .btn-primary.loading { opacity: 0.8; pointer-events: none; position: relative; }
+  .btn-primary.loading::after { content: ''; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; display: inline-block; animation: spin 0.7s linear infinite; margin-left: 10px; vertical-align: middle; }
+  .success-screen { display: none; text-align: center; padding: 20px 0 8px; animation: fadeUp 0.6s ease both; }
+  .success-screen.show { display: block; }
+  .success-icon { width: 64px; height: 64px; background: linear-gradient(135deg, var(--brown), var(--tan)); border-radius: 50%; margin: 0 auto 24px; display: flex; align-items: center; justify-content: center; }
+  .success-icon svg { width: 28px; height: 28px; color: white; }
+  .success-screen h2 { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 400; color: var(--brown); margin-bottom: 12px; }
+  .success-screen p { font-size: 15px; color: var(--muted); max-width: 380px; margin: 0 auto; line-height: 1.7; font-weight: 300; }
+  .success-detail { margin-top: 28px; padding: 16px 20px; background: rgba(239,172,77,0.08); border: 1px solid rgba(239,172,77,0.25); border-radius: 10px; font-family: 'DM Mono', monospace; font-size: 12px; color: var(--tan); letter-spacing: 0.03em; }
+  .footer { text-align: center; margin-top: 40px; font-size: 12px; color: var(--tan); letter-spacing: 0.03em; animation: fadeUp 0.7s 0.3s ease both; }
+  .footer a { color: var(--gold); text-decoration: none; }
+  .hint { font-size: 11px; color: var(--muted); margin-top: 4px; font-weight: 300; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-orbs">
+      <span class="orb-1"></span>
+      <span class="orb-2"></span>
+      <span class="orb-3"></span>
+    </div>
+    <div class="hero-logo">
+      <svg viewBox="0 0 260 72" width="260" height="72" xmlns="http://www.w3.org/2000/svg" aria-label="Trivium Venture Network">
+        <defs>
+          <clipPath id="topCircleClip"><circle cx="36" cy="24" r="20"/></clipPath>
+          <clipPath id="leftCircleClip"><circle cx="22" cy="48" r="20"/></clipPath>
+          <clipPath id="rightCircleClip"><circle cx="50" cy="48" r="20"/></clipPath>
+        </defs>
+        <circle cx="36" cy="24" r="20" fill="#C8883A" opacity="0.92"/>
+        <circle cx="22" cy="48" r="20" fill="#7A2A14" opacity="0.92"/>
+        <circle cx="50" cy="48" r="20" fill="#6B4028" opacity="0.92"/>
+        <circle cx="22" cy="48" r="20" fill="#5A1E0E" opacity="0.55" clip-path="url(#topCircleClip)"/>
+        <circle cx="50" cy="48" r="20" fill="#5A1E0E" opacity="0.55" clip-path="url(#topCircleClip)"/>
+        <circle cx="36" cy="24" r="20" fill="#3A1A0A" opacity="0.5" clip-path="url(#leftCircleClip)"/>
+        <circle cx="50" cy="48" r="20" fill="#3A1A0A" opacity="0.5" clip-path="url(#leftCircleClip)"/>
+        <circle cx="36" cy="24" r="20" fill="#3A1A0A" opacity="0.5" clip-path="url(#rightCircleClip)"/>
+        <circle cx="22" cy="48" r="20" fill="#3A1A0A" opacity="0.5" clip-path="url(#rightCircleClip)"/>
+        <circle cx="36" cy="24" r="20" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.8"/>
+        <circle cx="22" cy="48" r="20" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="0.8"/>
+        <circle cx="50" cy="48" r="20" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="0.8"/>
+        <line x1="82" y1="14" x2="82" y2="58" stroke="rgba(244,214,165,0.25)" stroke-width="1"/>
+        <text x="96" y="38" font-family="'Cormorant Garamond', Georgia, serif" font-size="24" font-weight="600" letter-spacing="1.5" fill="rgba(251,249,247,0.96)">Trivium</text>
+        <text x="97" y="54" font-family="'Outfit', sans-serif" font-size="9.5" font-weight="300" letter-spacing="2.8" fill="rgba(244,214,165,0.78)">VENTURE NETWORK</text>
+      </svg>
+    </div>
+    <h1>Advisor<br><em>Interest Form</em></h1>
+    <div class="hero-divider"></div>
+    <p>Share your expertise with our network. We connect advisors with the most relevant early-stage companies in the liberal arts ecosystem.</p>
+  </div>
+
+<div class="page-wrapper">
+
+  <!-- Progress -->
+  <div class="progress-container">
+    <div class="progress-steps">
+      <div class="step-dot active" id="dot-1">
+        <div class="dot">01</div>
+        <span class="step-label">Profile</span>
+      </div>
+      <div class="step-dot" id="dot-2">
+        <div class="dot">02</div>
+        <span class="step-label">Expertise</span>
+      </div>
+      <div class="step-dot" id="dot-3">
+        <div class="dot">03</div>
+        <span class="step-label">Support</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form card -->
+  <div class="form-card">
+
+    <!-- Step 1: Profile -->
+    <div class="step-panel active" id="step-1">
+      <div class="step-heading">
+        <span class="eyebrow">Step 1 of 3</span>
+        <h2>Your Profile</h2>
+      </div>
+      <div class="field-grid">
+        <div class="field">
+          <label>First Name <span class="req">*</span></label>
+          <input type="text" id="firstName" placeholder="Alexandra">
+          <span class="error-msg" id="err-firstName">Required</span>
+        </div>
+        <div class="field">
+          <label>Last Name <span class="req">*</span></label>
+          <input type="text" id="lastName" placeholder="Chen">
+          <span class="error-msg" id="err-lastName">Required</span>
+        </div>
+        <div class="field">
+          <label>Email <span class="req">*</span></label>
+          <input type="email" id="email" placeholder="alex@firm.com">
+          <span class="error-msg" id="err-email">Enter a valid email</span>
+        </div>
+        <div class="field">
+          <label>Cell <span class="req">*</span></label>
+          <input type="tel" id="phone" placeholder="+1 (212) 000-0000">
+          <span class="error-msg" id="err-phone">Required</span>
+        </div>
+        <div class="field full">
+          <label>Liberal Arts School <span class="req">*</span></label>
+          <select id="school">
+            <option value="">Select your school…</option>
+            <option>Agnes Scott College</option><option>Albion College</option><option>Allegheny College</option>
+            <option>Alma College</option><option>Amherst College</option><option>Austin College</option>
+            <option>Barnard College</option><option>Bates College</option><option>Beloit College</option>
+            <option>Berry College</option><option>Bowdoin College</option><option>Bryn Mawr College</option>
+            <option>Bucknell University</option><option>Carleton College</option><option>Centre College</option>
+            <option>Claremont McKenna College</option><option>Colby College</option><option>Colgate University</option>
+            <option>College of the Holy Cross</option><option>Colorado College</option><option>Connecticut College</option>
+            <option>Davidson College</option><option>Denison University</option><option>DePauw University</option>
+            <option>Dickinson College</option><option>Earlham College</option><option>Franklin & Marshall College</option>
+            <option>Furman University</option><option>Gettysburg College</option><option>Grinnell College</option>
+            <option>Hamilton College</option><option>Hampshire College</option><option>Harvey Mudd College</option>
+            <option>Haverford College</option><option>Hobart and William Smith Colleges</option><option>Hope College</option>
+            <option>Kenyon College</option><option>Knox College</option><option>Lafayette College</option>
+            <option>Lawrence University</option><option>Lewis & Clark College</option><option>Macalester College</option>
+            <option>Middlebury College</option><option>Morehouse College</option><option>Mount Holyoke College</option>
+            <option>Muhlenberg College</option><option>Oberlin College</option><option>Occidental College</option>
+            <option>Ohio Wesleyan University</option><option>Pitzer College</option><option>Pomona College</option>
+            <option>Reed College</option><option>Rhodes College</option><option>Rollins College</option>
+            <option>Sarah Lawrence College</option><option>Scripps College</option><option>Sewanee: The University of the South</option>
+            <option>Skidmore College</option><option>Smith College</option><option>Spelman College</option>
+            <option>St. John's College</option><option>St. Lawrence University</option><option>St. Olaf College</option>
+            <option>Swarthmore College</option><option>Trinity College</option><option>Union College</option>
+            <option>University of Richmond</option><option>Vassar College</option><option>Wabash College</option>
+            <option>Washington and Lee University</option><option>Washington College</option><option>Wellesley College</option>
+            <option>Wesleyan University</option><option>Wheaton College (IL)</option><option>Wheaton College (MA)</option>
+            <option>Whitman College</option><option>Williams College</option><option>Wofford College</option>
+            <option>Other / Not Listed</option>
+          </select>
+          <span class="error-msg" id="err-school">Required</span>
+        </div>
+
+        <div class="field full">
+          <label>Address <span class="req">*</span></label>
+          <input type="text" id="address" placeholder="123 Main St, City, State ZIP">
+          <span class="error-msg" id="err-address">Required</span>
+        </div>
+        <div class="field full">
+          <label>LinkedIn URL</label>
+          <input type="url" id="linkedin" placeholder="https://linkedin.com/in/...">
+        </div>
+      </div>
+      <div class="btn-row">
+        <span></span>
+        <button type="button" class="btn btn-primary" onclick="nextStep(1)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Industry -->
+    <div class="step-panel" id="step-2">
+      <div class="step-heading">
+        <span class="eyebrow">Step 2 of 3</span>
+        <h2>Industry of Interest</h2>
+      </div>
+      <div class="field-grid">
+        <div class="field full">
+          <label>Select all that apply</label>
+          <div class="checkbox-group" id="industryGroup">
+            <label class="checkbox-item"><input type="checkbox" value="SaaS"> <span>SaaS</span></label>
+            <label class="checkbox-item"><input type="checkbox" value="AI / Data"> <span>AI / Data</span></label>
+            <label class="checkbox-item"><input type="checkbox" value="Fintech"> <span>Fintech</span></label>
+            <label class="checkbox-item"><input type="checkbox" value="Healthcare / Biotech"> <span>Healthcare / Biotech</span></label>
+            <label class="checkbox-item"><input type="checkbox" value="Consumer Goods"> <span>Consumer Goods</span></label>
+            <label class="checkbox-item"><input type="checkbox" value="Marketplaces"> <span>Marketplaces</span></label>
+            <label class="checkbox-item"><input type="checkbox" value="Climate / Energy / Sustainability"> <span>Climate / Energy / Sustainability</span></label>
+            <label class="checkbox-item"><input type="checkbox" value="Education"> <span>Education</span></label>
+            <label class="checkbox-item"><input type="checkbox" value="Government"> <span>Government</span></label>
+            <label class="checkbox-item"><input type="checkbox" value="IT / Software / Deep Research"> <span>IT / Software / Deep Research</span></label>
+            <label class="checkbox-item"><input type="checkbox" value="Gambling"> <span>Gambling</span></label>
+            <label class="checkbox-item"><input type="checkbox" value="Real Estate / PropTech"> <span>Real Estate / PropTech</span></label>
+            <label class="checkbox-item"><input type="checkbox" value="Defense / GovTech"> <span>Defense / GovTech</span></label>
+            <label class="checkbox-item"><input type="checkbox" value="Media / Entertainment"> <span>Media / Entertainment</span></label>
+            <label class="checkbox-item"><input type="checkbox" value="Supply Chain / Logistics"> <span>Supply Chain / Logistics</span></label>
+            <label class="checkbox-item"><input type="checkbox" value="Legal / LegalTech"> <span>Legal / LegalTech</span></label>
+            <label class="checkbox-item" style="grid-column:1/-1;border-color:var(--brown);"><input type="checkbox" value="All Industries"> <span style="font-weight:500;">All Industries</span></label>
+          </div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn btn-secondary" onclick="prevStep(2)">← Back</button>
+        <button type="button" class="btn btn-primary" onclick="nextStep(2)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Method of Support -->
+    <div class="step-panel" id="step-3">
+      <div class="step-heading">
+        <span class="eyebrow">Step 3 of 3</span>
+        <h2>Method of Support</h2>
+      </div>
+      <div class="field-grid">
+        <div class="field full">
+          <label>How would you like to support Trivium companies?</label>
+          <div class="checkbox-group" id="supportGroup">
+            <label class="checkbox-item"><input type="checkbox" value="General Support"> <span>General Support</span></label>
+            <label class="checkbox-item"><input type="checkbox" value="Consulting"> <span>Consulting</span></label>
+            <label class="checkbox-item"><input type="checkbox" value="Connections"> <span>Connections</span></label>
+            <label class="checkbox-item"><input type="checkbox" value="Hiring"> <span>Hiring</span></label>
+            <label class="checkbox-item"><input type="checkbox" value="Marketing / Publicity"> <span>Marketing / Publicity</span></label>
+            <label class="checkbox-item"><input type="checkbox" value="Fundraising"> <span>Fundraising</span></label>
+            <label class="checkbox-item"><input type="checkbox" value="Other"> <span>Other</span></label>
+            <label class="checkbox-item" style="grid-column:1/-1;border-color:var(--brown);"><input type="checkbox" value="All of the Above"> <span style="font-weight:500;">All of the Above</span></label>
+          </div>
+        </div>
+        <!-- Newsletter -->
+        <div class="field full">
+          <label>The Liberal Arts Ledger</label>
+          <div style="margin-top:4px;">
+            <label class="checkbox-item" style="border-color:var(--border);">
+              <input type="checkbox" id="newsletter">
+              <span>I have subscribed to <a href="https://triviumventurenetwork.beehiiv.com/" target="_blank" style="color:var(--brown);font-weight:500;text-decoration:underline;text-underline-offset:3px;">The Liberal Arts Ledger</a></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Investor Interest -->
+        <div class="field full">
+          <label>Investor Membership Interest</label>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:10px;font-weight:300;">I might be interested in becoming an investor member of Trivium Venture Network.</p>
+          <div style="display:flex;flex-direction:column;gap:8px;" id="investorInterestGroup">
+            <label class="checkbox-item" style="border-radius:8px;">
+              <input type="radio" name="investorInterest" value="Never" style="width:16px;height:16px;accent-color:var(--brown);flex-shrink:0;">
+              <span style="font-size:13.5px;">Never</span>
+            </label>
+            <label class="checkbox-item" style="border-radius:8px;">
+              <input type="radio" name="investorInterest" value="In the future when I have more liquidity" style="width:16px;height:16px;accent-color:var(--brown);flex-shrink:0;">
+              <span style="font-size:13.5px;">In the future when I have more liquidity</span>
+            </label>
+            <label class="checkbox-item" style="border-radius:8px;">
+              <input type="radio" name="investorInterest" value="It depends on the circumstances" style="width:16px;height:16px;accent-color:var(--brown);flex-shrink:0;">
+              <span style="font-size:13.5px;">It depends on the circumstances</span>
+            </label>
+            <label class="checkbox-item" style="border-radius:8px;">
+              <input type="radio" name="investorInterest" value="Once I get to know Trivium better" style="width:16px;height:16px;accent-color:var(--brown);flex-shrink:0;">
+              <span style="font-size:13.5px;">Once I get to know Trivium better</span>
+            </label>
+            <label class="checkbox-item" style="border-radius:8px;">
+              <input type="radio" name="investorInterest" value="Other" style="width:16px;height:16px;accent-color:var(--brown);flex-shrink:0;" onclick="document.getElementById('investorOther').style.display='block'">
+              <span style="font-size:13.5px;">Other</span>
+            </label>
+          </div>
+          <div id="investorOther" style="display:none;margin-top:8px;">
+            <input type="text" id="investorOtherText" placeholder="Please specify…" style="width:100%;padding:11px 16px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;font-size:14px;font-weight:300;outline:none;">
+          </div>
+        </div>
+
+        <div class="field full">
+          <label>Anything else you'd like us to know?</label>
+          <textarea id="notes" placeholder="Background, specific areas of expertise, companies you've advised, availability..."></textarea>
+          <span class="hint">Optional — helps us match you with the most relevant opportunities.</span>
+        </div>
+      </div>
+      <div class="hint" style="margin:16px 0 4px;">Questions? Contact <a href="mailto:jshulman@triviumvn.com" style="color:var(--brown);font-weight:500;">jshulman@triviumvn.com</a></div>
+      <div class="btn-row">
+        <button type="button" class="btn btn-secondary" onclick="prevStep(3)">← Back</button>
+        <button type="button" class="btn btn-primary" id="submitBtn" onclick="submitForm()">Submit Application</button>
+      </div>
+    </div>
+
+    <!-- Success -->
+    <div class="success-screen" id="successScreen">
+      <div class="success-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+      <h2>Application Received</h2>
+      <p>Thank you for your interest in advising Trivium Venture Network companies. A member of our team will be in touch within 5–7 business days.</p>
+      <div class="success-detail" id="successRef">
+        Submitted · <span id="successTime"></span>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="footer">
+    <p>© 2026 Trivium Venture Network · <a href="#">Privacy Policy</a> · <a href="#">Terms</a></p>
+  </footer>
+
+</div>
+
+<script>
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzDnJn-SAO-EOEUoP1G-poJPA71nhEDetnmjZjL80RL_1j4B93C5pM6Sd4s3v4S2xE9dw/exec';
+
+const required = {
+  1: ['firstName', 'lastName', 'email', 'phone', 'school', 'address']
+};
+
+const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function setStep(n) {
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.step-dot').forEach((d, i) => {
+    d.classList.toggle('active', i + 1 === n);
+    d.classList.toggle('completed', i + 1 < n);
+  });
+  document.getElementById('step-' + n).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function nextStep(current) {
+  if (!validateStep(current)) return;
+  setStep(current + 1);
+}
+
+function prevStep(current) {
+  setStep(current - 1);
+}
+
+function validateStep(step) {
+  let ok = true;
+  (required[step] || []).forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const err = document.getElementById('err-' + id);
+    const val = el.value.trim();
+    const invalid = !val || (id === 'email' && !emailRe.test(val));
+    el.classList.toggle('error', invalid);
+    if (err) err.classList.toggle('show', invalid);
+    if (invalid) ok = false;
+  });
+  return ok;
+}
+
+document.querySelectorAll('input, select, textarea').forEach(el => {
+  el.addEventListener('input', () => {
+    el.classList.remove('error');
+    const err = document.getElementById('err-' + el.id);
+    if (err) err.classList.remove('show');
+  });
+});
+
+function getFormData() {
+  const industries = [...document.querySelectorAll('#industryGroup input:checked')].map(cb => cb.value).join(', ');
+  const support    = [...document.querySelectorAll('#supportGroup input:checked')].map(cb => cb.value).join(', ');
+  return {
+    timestamp:  new Date().toISOString(),
+    firstName:  document.getElementById('firstName').value.trim(),
+    lastName:   document.getElementById('lastName').value.trim(),
+    email:      document.getElementById('email').value.trim(),
+    phone:      document.getElementById('phone').value.trim(),
+    school:     document.getElementById('school').value,
+    address:    document.getElementById('address').value.trim(),
+    industries: industries,
+    support:    support,
+    linkedin:        document.getElementById('linkedin').value.trim(),
+    newsletter:      document.getElementById('newsletter').checked ? 'Yes' : 'No',
+    investorInterest: (function() {
+      const el = document.querySelector('input[name="investorInterest"]:checked');
+      if (!el) return '';
+      if (el.value === 'Other') {
+        const txt = document.getElementById('investorOtherText').value.trim();
+        return txt ? 'Other: ' + txt : 'Other';
+      }
+      return el.value;
+    })(),
+    notes:           document.getElementById('notes').value.trim(),
+  };
+}
+
+function submitForm() {
+  const btn = document.getElementById('submitBtn');
+  btn.classList.add('loading');
+  btn.textContent = 'Submitting...';
+
+  // Always advance to success after 1.5s
+  setTimeout(function() { showSuccess(); }, 1500);
+
+  try {
+    const data = getFormData();
+    fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+  } catch(e) { console.error('Submit error:', e); }
+}
+
+function showSuccess() {
+  try {
+    document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+    const prog = document.querySelector('.progress-container');
+    if (prog) prog.style.display = 'none';
+    const screen = document.getElementById('successScreen');
+    screen.style.display = 'block';
+    screen.classList.add('show');
+    const timeEl = document.getElementById('successTime');
+    if (timeEl) timeEl.textContent = new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch(e) { console.error('showSuccess error:', e); }
+}
+</script>
+</body>
+</html>
